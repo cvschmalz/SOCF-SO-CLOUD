@@ -7,21 +7,18 @@ import json
 
 APP = Flask(__name__)
 
-# CPU usage per core
-print("CPU:", psutil.cpu_percent(percpu=True)[0], "%")
-cpu = psutil.cpu_percent(percpu=True)[0] + " %"
+# # CPU usage per core
+# print("CPU:", psutil.cpu_percent(percpu=True)[0], "%")
 
-# Mem (MB)
-print("Memória usada:", psutil.virtual_memory().used // 1024 ** 2, "MB")
-mem = psutil.virtual_memory().used // 1024 ** 2 + " MB"
+# # Mem (MB)
+# print("Memória usada:", psutil.virtual_memory().used // 1024 ** 2, "MB")
 
-# Get process PID
-print(os.getpid())
-pid = os.getpid()
+# # Get process PID
+# print(os.getpid())
+# pid = os.getpid()
 
-# OS
-print("Sistema operacional:", platform.platform())
-current_os = platform.platform()
+# # OS
+# print("Sistema operacional:", platform.platform())
 
 @APP.get("/info")
 def info():
@@ -33,13 +30,17 @@ def info():
         }
     ])
 
-@APP.get("/metricas")
-def metricas(cpu, mem, pid, current_os):
-    return json.dumps([
-        {
-            "PID": pid,
-            "CPU": cpu,
-            "Memória usada": mem,
-            "Sistema operacional": current_os
-        }
-    ])
+@APP.route("/metricas")
+def metricas():
+    process = psutil.Process(os.getpid())
+    cpu_usage = psutil.cpu_percent(interval=0.1)
+    mem_usage = process.memory_info().rss / (1024 * 1024)  # MB
+    pid = process.pid
+    current_os = platform.system() + " (" + platform.release() + ")"
+
+    return json.dumps({
+        "PID": pid,
+        "Memoria usada": f"{mem_usage:.2f} MB",
+        "CPU": f"{cpu_usage:.2f}%",
+        "Sistema Operacional": current_os
+    })
