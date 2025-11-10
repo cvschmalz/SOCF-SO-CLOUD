@@ -7,22 +7,6 @@ import json
 
 APP = Flask(__name__)
 
-# # CPU usage per core
-# print("CPU:", psutil.cpu_percent(percpu=True)[0], "%")
-# cpu = psutil.cpu_percent(percpu=True)[0] + " %"
-
-# # Mem (MB)
-# print("Memória usada:", psutil.virtual_memory().used // 1024 ** 2, "MB")
-# mem = psutil.virtual_memory().used // 1024 ** 2 + " MB"
-
-# # Get process PID
-# print(os.getpid())
-# pid = os.getpid()
-
-# # OS
-# print("Sistema operacional:", platform.platform())
-# current_os = platform.platform()
-
 @APP.get("/info")
 def info():
     return json.dumps([
